@@ -21,6 +21,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var myAdapter: MyAdapter
     private lateinit var myDBHelper: MyDBHelper
+    private lateinit var list: ArrayList<User>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,7 +29,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         binding.apply {
             myDBHelper = MyDBHelper(root.context)
-            val list = myDBHelper.readUser()
+            list = myDBHelper.readUser()
 
             imageAdd.setOnClickListener {
                 findNavController().navigate(R.id.addFragment)
@@ -45,6 +46,7 @@ class HomeFragment : Fragment() {
                     list.removeAt(position)
                     myAdapter.notifyItemRemoved(position)
                     myAdapter.notifyItemRangeChanged(position, list.size)
+                    add()
                 }
 
                 override fun onClick(position: Int) {
@@ -54,8 +56,27 @@ class HomeFragment : Fragment() {
             })
 
             myRv.adapter = myAdapter
-
+            add()
             return binding.root
+        }
+    }
+
+    // VISIBLE, INVISIBLE btns
+    fun add() {
+        binding.apply {
+            if (list.isEmpty()) {
+                btnAdd.visibility = View.VISIBLE
+                imageAdd.visibility = View.INVISIBLE
+                btnAdd.setOnClickListener {
+                    findNavController().navigate(R.id.addFragment)
+                }
+            } else {
+                btnAdd.visibility = View.INVISIBLE
+                imageAdd.visibility = View.VISIBLE
+                imageAdd.setOnClickListener {
+                    findNavController().navigate(R.id.addFragment)
+                }
+            }
         }
     }
 }
